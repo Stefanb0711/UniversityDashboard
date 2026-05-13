@@ -11,7 +11,8 @@ app.config["DEBUG"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///meineDatenbank.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = flask_sqlalchemy.SQLAlchemy(app)
+
+
 
 
     #class StudentModel(db.Model):
@@ -22,12 +23,6 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 
 
 
-#student1Studium = Studium("Cybersecurity", 3)
-
-#erstesSemester = Semester(semester_nummer=1, module= ["Einführung in die Informatik", "Programmierung mit Python",
-#Objektorientierte Programmierung", "Theoretische Informatik", "Algorithmen und Datenstrukturen"])
-#zweitesSemester = Semester(semester_nummer=2, module=["Datenbanken und Informationssysteme",
-#"Datenbanken und Informationssysteme", "Betriebssysteme", "Verteilte Systeme", "Mobile App Entwicklung"])
 
 
 first_semester_module_introduction = Module(name="Introduction into Informatic", etc=5, exam_performance=4 )

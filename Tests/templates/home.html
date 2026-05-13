@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>SQLAlchemy Test-App</title>
+    </head>
+    <body>
+        <h1>Student hinzufügen</h1>
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="email" name="email" placeholder="E-Mail" required>
+            <button type="submit">Speichern</button>
+        </form>
+
+        <hr>
+
+        <h2>Gespeicherte Studenten</h2>
+
+        {% if studenten %}
+            <ul>
+                {% for student in studenten %}
+                    <li>
+                        ID: {{ student.id }} |
+                        Name: {{ student.name }} |
+                        E-Mail: {{ student.email }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Noch keine Einträge vorhanden.</p>
+        {% endif %}
+    </body>
+</html>
