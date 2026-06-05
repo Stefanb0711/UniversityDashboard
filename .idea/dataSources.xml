@@ -15,5 +15,19 @@
       <jdbc-url>jdbc:sqlite:C:\Users\stefa\OneDrive\Dokumente\Studium\PyhtonOOP-Projekt\Tests\instance\example.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="meineDatenbank" uuid="7efa6768-3643-49ed-9745-a826434d962e">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\stefa\OneDrive\Dokumente\Studium\PyhtonOOP-Projekt\instance\meineDatenbank.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="identifier.sqlite" uuid="9175374c-6ed0-4be5-bf8b-4801cb487cf7">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:identifier.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

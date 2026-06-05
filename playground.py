@@ -1,39 +1,28 @@
-from meineBib import *
+import flask
+from flask import request, url_for
+from flask import render_template
+from flask import redirect
+from flask_sqlalchemy import SQLAlchemy
+#from meineBib import *
 
 app = flask.Flask(__name__)
 
-app.config["DEBUG"] = True
+#app.config["DEBUG"] = True
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///meineDatenbank.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///meineDatenbank.db"
+
+#db.init_app(app)
 
 
-module_object_oriented_programming = Module(name="Object Oriented Programming", etc=5, exam_performance= )
-module_discrete_mathmatics = Module(name="Discrete Mathmatics", etc=5, exam_performance=)
-module_data_protection_laws = Module(name="Data Protection Laws", etc=5, exam_performance=)
-
-exam_score_object_oriented_programming = ExamScore(module_)
-exam_score_discrete_mathmatics = ExamScore(module_id=)
-exam_score_data_protection_laws = ExamScore()
+@app.route("/")
+def index():
 
 
 
-class Dashboard:
-
-    def __init__(self):
-        pass
-
-    def save(self):
-
-        students.insert(student.to_dict())
+    return render_template("test.html")
 
 
-        result = students.search(StudentQuery.name == "Max")
-        print(result)
-
-    def read(self):
-        pass
-
-
-
+if __name__ == "__main__":
+    app.run(debug=True)
 
 

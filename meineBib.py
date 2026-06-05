@@ -1,10 +1,14 @@
 import flask
 import flask_sqlalchemy
-from flask_wtf import FlaskForm
+#from flask_wtf import FlaskForm
 from sqlalchemy import create_engine, Column, Integer
 from flask_sqlalchemy import SQLAlchemy
-from app import db, app
 
+db = SQLAlchemy()
+
+#from app import db
+
+#db.init_app(app)
 
 #Benötigte Funktionen
 #Prüfungsleistungen ausgeben
@@ -16,9 +20,6 @@ from app import db, app
 
 #Prüfungsleistungen
 
-
-
-
 #Flask SQLAlchemy Vorteile
 #
 
@@ -27,17 +28,134 @@ from app import db, app
 
 class Dashboard:
 
-    def __init__(self):
-        pass
+    """semesters, student, studies,
+                     current_semester, modules, modules_of_current_semester"""
+    def __init__(self, student):
+
+        self.current_student = student
+        self.studies = Studies.query.filter_by(student_id=self.current_student.id).first()
+
+        self.semesters = Semester.query.filter_by(study_id=self.studies.id).all()
+
+        self.exam_score_alarm_triggered = False
+
+        last_semester = self.semesters[0]
+
+        if self.current_student is None:
+            return
+
+        #Aktuelles Semester herausfinden
+        for semester in self.semesters:
+
+            if semester.semester_number > last_semester.semester_number:
+                last_semester = semester
+
+        self.current_semester = last_semester
+
+        self.modules = []
+
+        for semester in self.semesters:
+            modules = Module.query.filter_by(semester_id=semester.id).all()
+            self.modules.extend(modules)
+
+        #Nach Modulen im aktuellen Semester filtern
+
+        self.modules_of_current_semester = Module.query.filter_by(semester_id=self.current_semester.id).all()
+
+        self.exam_scores_of_current_semester = []
+        for module in self.modules_of_current_semester:
+            current_exam_scores = ExamScore.query.filter(
+                ExamScore.module_id == module.id,
+                #Auschließung von Prüfungen die noch nicht geschrieben wurden
+                ExamScore.score.is_not(None)
+            ).all()
+
+
+        self.all_exam_scores = []
+
+
+        for module in self.modules:
+
+            exam_scores = ExamScore.query.filter_by(module_id=module.id).all()
+
+            for exam_score in exam_scores:
+                self.all_exam_scores.append(exam_score.score)
+
+
+            #self.all_exam_scores.extend(exam_score.score)
+
+
+
+        #self.exam_scores_of_current_module = ExamScore.query.filter_by(module_id=self.curr.id).all()
+        self.sum_exam_scores = None
+        self.exam_score_goal_alarm = None
 
     def exam_score_alarm(self):
-        #all_modules =
-        pass
+
+
+        print("Modules of current semester: ", self.modules_of_current_semester)
+
+        """  #Nach Semestern filtern
+        semesters = Semester.query.filter_by(study_id=3).all()
+
+        self.semesters = Semester.query.order_by(
+            Semester.semester_number.desc()).first()
+
+        #Nach Modulen filtern
+        for semester in semesters:
+
+            modules = Module.query.filter_by(semester_id=semester.id).all()
+
+            self.modules.extend(modules)
+        """
+
+
+        #Nach Modulen im aktuellen Semester filtern
+        #for module in self.modules:
+
+
+        #Filtern nach allen ExamScores
+
+        """
+        for module in self.modules:
+            exam_score_of_current_module = ExamScore.query.filter_by(module_id=module.id).all()
+
+            for exam_score in exam_score_of_current_module:
+                self.all_exam_scores.append(exam_score.score)
+
+        """
+
+        if not self.all_exam_scores:
+            self.mean_of_all_exam_scores = None
+            self.exam_score_alarm_triggered = False
+            return
+
+        self.mean_of_all_exam_scores = int(sum(self.all_exam_scores) / len(self.all_exam_scores))
+
+
+        print("Durchschnitt der ExamScores: ", self.mean_of_all_exam_scores)
+
+
+        if self.mean_of_all_exam_scores < 90:
+            self.exam_score_alarm_triggered = True
+
+
+
 
 
     def study_duration_alarm(self):
-        pass
 
+        not_passed_modules = Module.query.filter_by(passed=False).all()
+
+        examed_modules_of_current_semester = Semester.query.filter_by("Exa")
+
+        #self.modules_of_current_semester
+
+        """
+            if self.semesters.extra_semesters > 0:
+            self.exam_score_alarm_triggered = True
+
+        """
 
 
 
@@ -50,11 +168,6 @@ def datei_laden(datei_name):
         return datei.read()
     
 
-class DashboardWidget:
-    def __init__(self, name, inhalt):
-        self.name = name
-        self.inhalt = inhalt
-
     
 
 
@@ -63,14 +176,10 @@ class Student(db.Model):
     __tablename__ = "student"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, primary_key=True)
-    age = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String,nullable=False)
+    age = db.Column(db.Integer, nullable=False)
 
     studies = db.relationship("Studies", back_populates="student")
-
-
-with app.app_context():
-    pass
 
 
 class Studies(db.Model):
@@ -79,6 +188,10 @@ class Studies(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    current_semester = db.Column(db.Integer, nullable=False)
+
+    #Anzahl der Semester im Studiengang
+    semester_count = db.Column(db.Integer, nullable=False)
 
 
     #Stellt Verbindung zu übergeordneten Studentobjet her
@@ -92,19 +205,19 @@ class Studies(db.Model):
     #Stellt die objektorientierte Beziehung zum Objekt Student her
     student = db.relationship("Student", back_populates="studies")
 
-    semesters = db.relationship("Semester", backref="study", lazy=True)
+    #Ermöglicht den Zugriff auf alle Semester dieses Studiengangs
+    semesters = db.relationship("Semester",back_populates="study")
 
 
 
 class Semester(db.Model):
 
 
-
-
     __tablename__ = "semester"
 
     id = db.Column(db.Integer, primary_key=True)
-    studies = db.Column(db.String, primary_key=True)
+    semester_number = db.Column(db.Integer, nullable=False)
+    extra_semesters = db.Column(db.Integer, nullable=False)
 
     #Stellt Verbindung zum übergeordneten Studiesobjekt her. Sie verbindet die Tabellen Semester und Studies
     study_id = db.Column(
@@ -115,9 +228,11 @@ class Semester(db.Model):
     #Stellt die objektorientierte Beziehung zum Objekt Student her. Hier werden die Pythob-Objete Semester und
     #das entsprechende Studies-Objekt miteinander verbunden
 
-    study = db.relationship("Studies", back_populates="semester")
+    study = db.relationship("Studies", back_populates="semesters")
 
-    module = db.relationship(db.Integer, db.ForeignKey("modul.id"), nullable=False)
+    #Ermöglicht Zugriff auf die zugehörigen Module-Objekte
+    modules = db.relationship("Module", back_populates="semester")
+
 
 
 class Module(db.Model):
@@ -130,9 +245,13 @@ class Module(db.Model):
     # Sie verbindet die Tabellen Semester und Module miteinander
 
     semester_id = db.Column(db.Integer, db.ForeignKey("semester.id"))
-    semester = db.relationship("Semester", back_populates="module")
 
+    #Ermöglicht Zugriff auf das Semesterobjekt
+    semester = db.relationship("Semester", back_populates="modules")
 
+    passed = db.Column(db.Boolean)
+
+    #Zugriff auf das zugehörige ExamScore-Objekt für dieses Modul
     exam_score = db.relationship(
         "ExamScore",
         back_populates="module",
@@ -146,90 +265,17 @@ class ExamScore(db.Model):
     __tablename__ = "exam_score"
 
     id = db.Column(db.Integer, primary_key=True)
-    score = db.Column(db.Integer, nullable=False)
+    score = db.Column(db.Integer)
 
     #Stellt Verbindung zum übergeordneten Moduleobjekt her
     #Sie stellt die Verbindung zwischen den Tabellen ExamScore und Module her
     module_id = db.Column(db.Integer, db.ForeignKey("module.id"))
 
     #Stellt die objektorientierte Beziehung zum Modulobjekt her
-    module = db.relationship(db.Integer, back_populates="exam_score")
-
-    student_id = db.Column(db.Integer, db.ForeignKey("student"))
-
-
-"""
-class Student(db.Model):
-    def __init__(self, name, age, studies):
-        self.name = name
-        self.age = age
-        self.studies = studies
-
-"""
-
-
-class Studies(db.Model):
-    def __init__(self, studies=None, semesters=None):
-
-        self.studies = studies
-        self.semesters = []
-
-    def to_dict(self):
-        return {
-            "studies": self.studies,
-            "semesters": self.semesters
-        }
-
-
-
-class Semester(db.Model):
-
-    __tablename__ = "semester"
-
-    id = db.Column(db.Integer, primary_key=True)
-    semester_name = db.Column(db.String(100), nullable=False)
-
-    module = db.relationship(
-        "Module",
-        backref="semester",
-        lazy=True
-    )
-
-    def __init__(self, semester_nummer, semester_name, module):
-        self.semester_nummer = semester_nummer
-        self.pruefungsleistungen = []
-        self.module = []
-
-
-
-
-class Module(db.Model):
-
-    __tablename__ = "module"
-
-    id = db.Column(db.Integer, primary_key = True)
-
-    module_name = db.Column(db.String(100), nullable=False)
-
-    semester_id = db.Column(
-        db.Integer,
-        db.ForeignKey("semester.id"),
-        nullable = False
-    )
-    def __init__(self, name, etc, exam_performance):
-        self.name = name
-        self.etc = etc
-        self.exam_perfromance = exam_performance
-
-
-
-
-class ExamScore(db.Model):
-
-    __tablename__ = "exam_score"
-
-    id = db.Column(db.Integer, primary_key=True)
-    score = db.Column(db.Integer, nullable=False)
-    module_id = db.Column(db.Integer, db.ForeignKey("module.id"), nullable=False)
     module = db.relationship("Module", back_populates="exam_score")
+
+    #student_id = db.Column(db.Integer, db.ForeignKey("student"))
+
+
+
 

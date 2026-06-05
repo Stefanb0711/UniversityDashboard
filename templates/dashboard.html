@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Dashboard</title>
+    </head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <body>
+        <h1>Student hinzufügen</h1>
+
+
+        <!-- Semesters -->
+
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            {% for semester in semesters  %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+
+                            {% if semester.id == current_semester.id %}
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                    Semester {{ semester.semester_number }}
+                                </button>
+                            {%  endif %}
+
+                            {% if semester.id != current_semester.id %}
+                                <button class="accordion-button" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+                                    Semester {{ semester.semester_number }}
+                                </button>
+                            {%  endif %}
+
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+
+                            {% for module in semester.modules %}
+                            <div class="accordion-body">
+                                <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="email" name="email" placeholder="E-Mail" required>
+            <button type="submit">Speichern</button>
+        </form>
+
+        <hr>
+
+        <div style="
+        width: 33%;
+        background-color: {{ 'red' if my_dashboard.exam_score_alarm_triggered else 'aquamarine' }};
+        margin: 20px auto;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+        text-align: center;
+        font-family: Arial;
+        ">
+            <h3>ExamScoreAlarm</h3>
+
+            {%  if my_dashboard.exam_score_alarm_triggered %}
+                <p style="color: white; font-weight: bold;">
+                    Achtung! Der Durchschnitt aller Prüfungen ist kritisch.
+                </p>
+
+            {% elif not my_dashboard.exam_score_alarm_triggered %}
+                <p style="color: white; font-weight: bold;">
+                    Der Durschnitt deiner Prüfungen ist in Ordnung. Weiter so!
+                </p>
+
+            {% endif %}
+
+            
+
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>
