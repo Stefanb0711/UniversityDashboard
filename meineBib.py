@@ -136,7 +136,8 @@ class Dashboard:
         print("Durchschnitt der ExamScores: ", self.mean_of_all_exam_scores)
 
 
-        if self.mean_of_all_exam_scores < 90:
+
+        if self.mean_of_all_exam_scores < 50:
             self.exam_score_alarm_triggered = True
 
 
