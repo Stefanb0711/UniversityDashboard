@@ -66,42 +66,42 @@ with app.app_context():
     # ------------------------
     # Module für Semester 1
     # ------------------------
-    modul1 = Module(name="Programmierung 1", semester=semester1, passed=True)
-    modul2 = Module(name="Mathematik 1", semester=semester1, passed=True)
-    modul3 = Module(name="Einführung Informatik", semester=semester1, passed=False)
-    modul4 = Module(name="Datenbanken", semester=semester1, passed=True)
-    modul5 = Module(name="Webentwicklung", semester=semester1, passed=False)
+
+    modul1 = Module(name="Programmierung 1", semester=semester1, passed=True, number_of_attempts=1)
+    modul2 = Module(name="Mathematik 1", semester=semester1, passed=True, number_of_attempts=2)
+    modul3 = Module(name="Einführung Informatik", semester=semester1, passed=False, number_of_attempts=1)
+    modul4 = Module(name="Datenbanken", semester=semester1, passed=True, number_of_attempts=1)
+    modul5 = Module(name="Webentwicklung", semester=semester1, passed=False, number_of_attempts=3)
 
     # ------------------------
     # Module für Semester 2
     # ------------------------
 
-    modul6 = Module(name="Programmierung 2", semester=semester2, passed=True)
-    modul7 = Module(name="Mathematik 2", semester=semester2, passed=False)
-    modul8 = Module(name="Software Engineering", semester=semester2, passed=True)
-    modul9 = Module(name="Betriebssysteme", semester=semester2, passed=True)
-    modul10 = Module(name="Netzwerktechnik", semester=semester2, passed=False)
+    modul6 = Module(name="Programmierung 2", semester=semester2, passed=True, number_of_attempts=1)
+    modul7 = Module(name="Mathematik 2", semester=semester2, passed=False, number_of_attempts=2)
+    modul8 = Module(name="Software Engineering", semester=semester2, passed=True, number_of_attempts=1)
+    modul9 = Module(name="Betriebssysteme", semester=semester2, passed=True, number_of_attempts=2)
+    modul10 = Module(name="Netzwerktechnik", semester=semester2, passed=False, number_of_attempts=3)
 
     # ------------------------
     # Module für Semester 3
     # ------------------------
 
-    modul11 = Module(name="Algorithmen", semester=semester3, passed=True)
-    modul12 = Module(name="Cyber Security", semester=semester3, passed=False)
-    modul13 = Module(name="Cloud Computing", semester=semester3, passed=True)
-    modul14 = Module(name="Projektmanagement", semester=semester3, passed=True)
-    modul15 = Module(name="KI Grundlagen", semester=semester3, passed=False)
+    modul11 = Module(name="Algorithmen", semester=semester3, passed=True, number_of_attempts=1)
+    modul12 = Module(name="Cyber Security", semester=semester3, passed=False, number_of_attempts=2)
+    modul13 = Module(name="Cloud Computing", semester=semester3, passed=True, number_of_attempts=1)
+    modul14 = Module(name="Projektmanagement", semester=semester3, passed=True, number_of_attempts=1)
+    modul15 = Module(name="KI Grundlagen", semester=semester3, passed=False, number_of_attempts=3)
 
     # ------------------------
     # Module für Semester 4
     # ------------------------
 
-    modul16 = Module(name="Machine Learning", semester=semester4, passed=False)
-    modul17 = Module(name="Mobile Entwicklung", semester=semester4, passed=True)
-    modul18 = Module(name="DevOps", semester=semester4, passed=True)
-    modul19 = Module(name="IT-Recht", semester=semester4, passed=True)
-    modul20 = Module(name="Bachelorarbeit", semester=semester4, passed=False)
-
+    modul16 = Module(name="Machine Learning", semester=semester4, passed=False, number_of_attempts=2)
+    modul17 = Module(name="Mobile Entwicklung", semester=semester4, passed=True, number_of_attempts=1)
+    modul18 = Module(name="DevOps", semester=semester4, passed=True, number_of_attempts=1)
+    modul19 = Module(name="IT-Recht", semester=semester4, passed=True, number_of_attempts=2)
+    modul20 = Module(name="Bachelorarbeit", semester=semester4, passed=False, number_of_attempts=1)
     # endregion
 
     # region Examscores
@@ -228,7 +228,7 @@ def dashboard():
 
     print("Dashboard wurde aufgerufen")
 
-    student = Student.query.filter_by(name="Anna Schmidt").first()
+    student = Student.query.filter_by(name="Max Müller").first()
 
 
     my_dashboard = Dashboard(student=student
@@ -240,12 +240,16 @@ def dashboard():
 
     my_dashboard.exam_score_alarm()
 
+    for semester in my_dashboard.semesters:
+
+        print("Semester: ", semester)
+
+
 
 
     return render_template("dashboard.html", my_dashboard=my_dashboard,
                            semesters=my_dashboard.semesters,
-                           current_semester=my_dashboard.current_semester
-)
+                           current_semester=my_dashboard.current_semester)
 
 
 

@@ -246,6 +246,7 @@ class Module(db.Model):
     # Sie verbindet die Tabellen Semester und Module miteinander
 
     semester_id = db.Column(db.Integer, db.ForeignKey("semester.id"))
+    number_of_attempts = db.Column(db.Integer, nullable=False, default=3)
 
     #Ermöglicht Zugriff auf das Semesterobjekt
     semester = db.relationship("Semester", back_populates="modules")
