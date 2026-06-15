@@ -13,142 +13,140 @@
 
 
         <div class="accordion" id="accordionPanelsStayOpenExample">
-        <!-- Semesters -->
-                {% for semester in semesters  %}
+             <!-- Semesters -->
 
 
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
+<div class="accordion" id="semesterAccordion">
 
-                            {% if semester.id == current_semester.id %}
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                    Semester {{ semester.semester_number }}
-                                </button>
-                            {%  endif %}
+    {% for semester in semesters %}
 
-                            {% if semester.id != current_semester.id %}
-                                <button class="accordion-button" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-                                    Semester {{ semester.semester_number }}
-                                </button>
-                            {%  endif %}
+        <div class="accordion-item m-4 rounded-4 overflow-hidden">
+            <h2 class="accordion-header" id="heading-{{ semester.id }}">
 
-                        </h2>
+                <button class="accordion-button {% if semester.id != current_semester.id %}collapsed{% endif %}"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapse-{{ semester.id }}"
+                        aria-expanded="{% if semester.id == current_semester.id %}true{% else %}false{% endif %}"
+                        aria-controls="collapse-{{ semester.id }}">
 
+                    Semester {{ semester.semester_number }}
 
-                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                </button>
 
+            </h2>
 
-                        <div class="accordion-body p-4">
-                            <div class="container-fluid px-3 py-3">
-                                <div class="row g-4">
-                                    {% for module in semester.modules %}
-                                        <div class="accordion-body col-12 col-md-6">
+            <div id="collapse-{{ semester.id }}"
+                 class="accordion-collapse collapse {% if semester.id == current_semester.id %}show{% endif %}"
+                 aria-labelledby="heading-{{ semester.id }}"
+                 data-bs-parent="#semesterAccordion">
 
-                                            <div class="card border-0 shadow-sm rounded-4 bg-light">
-                                                <div class="card-body p-4">
+                <div class="accordion-body p-4">
+                    <div class="container-fluid px-3 py-3">
+                        <div class="row g-4">
 
-                                                    <!-- Header -->
-                                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                                        <div>
-                                                        <span class="badge bg-primary-subtle text-primary mb-2">
-                                                            Modulübersicht
-                                                        </span>
+                            {% for module in semester.modules %}
 
-                                                            <h3 class="card-title mb-1">
-                                                                {{ module.name }}
-                                                            </h3>
+                                <div class="col-12 col-md-6 p-3">
 
-                                                            <p class="text-muted mb-0">
-                                                                Informationen zur Prüfungsleistung
-                                                            </p>
-                                                        </div>
+                                    <div class="card border-0 shadow-sm rounded-4 bg-light h-100">
+                                        <div class="card-body p-4">
+
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <div>
+                                                    <span class="badge bg-primary-subtle text-primary mb-2">
+                                                        Modulübersicht
+                                                    </span>
+
+                                                    <h3 class="card-title mb-1">
+                                                        {{ module.name }}
+                                                    </h3>
+
+                                                    <p class="text-muted mb-0">
+                                                        Informationen zur Prüfungsleistung
+                                                    </p>
+                                                </div>
+
+                                                {% if module.passed %}
+                                                    <span class="badge rounded-pill bg-success px-3 py-2">
+                                                        Bestanden
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge rounded-pill bg-danger px-3 py-2">
+                                                        Offen / Nicht bestanden
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+
+                                            <hr>
+
+                                            <div class="row g-3 mt-2">
+
+                                                <div class="col-md-4">
+                                                    <div class="p-3 bg-white rounded-3 border h-100">
+                                                        <p class="text-muted mb-1 small">
+                                                            Prüfungsergebnis
+                                                        </p>
+
+                                                        <h5 class="mb-0">
+                                                            {% if module.exam_score %}
+                                                                {{ module.exam_score.score }}
+                                                            {% else %}
+                                                                Noch kein Ergebnis
+                                                            {% endif %}
+                                                        </h5>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="p-3 bg-white rounded-3 border h-100">
+                                                        <p class="text-muted mb-1 small">
+                                                            Prüfungsversuche
+                                                        </p>
+
+                                                        <h5 class="mb-0">
+                                                            {{ module.number_of_attempts }} / 3
+                                                        </h5>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="p-3 bg-white rounded-3 border h-100">
+                                                        <p class="text-muted mb-1 small">
+                                                            Status
+                                                        </p>
 
                                                         {% if module.passed %}
-                                                            <span class="badge rounded-pill bg-success px-3 py-2">
-                                                            Bestanden
-                                                        </span>
+                                                            <h5 class="text-success mb-0">
+                                                                Erfolgreich abgeschlossen
+                                                            </h5>
                                                         {% else %}
-                                                            <span class="badge rounded-pill bg-danger px-3 py-2">
-                                                            Offen / Nicht bestanden
-                                                        </span>
+                                                            <h5 class="text-danger mb-0">
+                                                                Noch offen
+                                                            </h5>
                                                         {% endif %}
                                                     </div>
-
-                                                    <hr>
-
-                                                    <!-- Informationsbereich -->
-                                                    <div class="row g-3 mt-2">
-
-                                                        <!-- Exam Score -->
-                                                        <div class="col-md-4">
-                                                            <div class="p-3 bg-white rounded-3 border h-100">
-                                                                <p class="text-muted mb-1 small">
-                                                                    Prüfungsergebnis
-                                                                </p>
-
-                                                                <h5 class="mb-0">
-                                                                    {% if module.exam_score %}
-                                                                        {{ module.exam_score.score }}
-                                                                    {% else %}
-                                                                        Noch kein Ergebnis
-                                                                    {% endif %}
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Attempts -->
-                                                        <div class="col-md-4">
-                                                            <div class="p-3 bg-white rounded-3 border h-100">
-                                                                <p class="text-muted mb-1 small">
-                                                                    Prüfungsversuche
-                                                                </p>
-
-                                                                <h5 class="mb-0">
-                                                                    {{ module.number_of_attempts }} / 3
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Passed -->
-                                                        <div class="col-md-4">
-                                                            <div class="p-3 bg-white rounded-3 border h-100">
-                                                                <p class="text-muted mb-1 small">
-                                                                    Status
-                                                                </p>
-
-                                                                {% if module.passed %}
-                                                                    <h5 class="text-success mb-0">
-                                                                        Erfolgreich abgeschlossen
-                                                                    </h5>
-                                                                {% else %}
-                                                                    <h5 class="text-danger mb-0">
-                                                                        Noch offen
-                                                                    </h5>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
                                                 </div>
+
                                             </div>
 
                                         </div>
-                                    {% endfor %}
+                                    </div>
 
                                 </div>
-                            </div>
-                        </div>
 
-
-
-
+                            {% endfor %}
 
                         </div>
-
+                    </div>
                 </div>
-            {% endfor %}
+
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
 
         </div>
 
