@@ -31,9 +31,12 @@ with app.app_context():
     student2 = Student(name="Anna Schmidt", age=27)
 
     study1 = Studies(name="Informatik", student=student1,
-                     semester_count=6, current_semester=1)
+                     semester_count=6, current_semester=1,
+                     current_month_of_studying=20
+                     )
+
     study2 = Studies(name="Wirtschaftsinformatik", student=student2,
-                     semester_count=7, current_semester=3)
+                     semester_count=7, current_semester=3, current_month_of_studying=12 )
 
     # region Semesters
 
@@ -256,6 +259,7 @@ def dashboard():
 
     student = Student.query.filter_by(name="Max Müller").first()
 
+    #study1 = Studies.query.filter_by(name="")
 
     my_dashboard = Dashboard(student=student
                              # , studies=current_student.studies,

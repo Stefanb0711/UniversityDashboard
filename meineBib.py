@@ -63,6 +63,9 @@ class Dashboard:
         self.modules_of_current_semester = Module.query.filter_by(semester_id=self.current_semester.id).all()
 
         self.exam_scores_of_current_semester = []
+
+
+
         for module in self.modules_of_current_semester:
             current_exam_scores = ExamScore.query.filter(
                 ExamScore.module_id == module.id,
@@ -92,10 +95,25 @@ class Dashboard:
         self.sum_exam_scores = None
         self.exam_score_goal_alarm = None
 
+
+        #Variabeln für StudyDurationAlarm
+
+        self.study_duration_alarm_triggered = False
+
+
+        self.current_month_of_studying = self.studies.current_month_of_studying
+
+        passed_modules = [module for module in self.modules if module.passed]
+        self.current_amount_of_passed_modules = len(passed_modules)
+
+        self.duration_goal_of_studying_in_months = 36
+
+
+
     def exam_score_alarm(self):
 
 
-        print("Modules of current semester: ", self.modules_of_current_semester)
+        print("Modules: ", self.modules)
 
         """  #Nach Semestern filtern
         semesters = Semester.query.filter_by(study_id=3).all()
@@ -161,27 +179,54 @@ class Dashboard:
 
         print("All Modules of Studys: ", all_modules_of_studys)
 
-
+        """
         current_month_of_studying = 24
 
-        current_amount_of_passed_modules = 18
+        current_amount_of_passed_modules = 3
 
         duration_goal_of_studying_in_months = 36
 
+        """
+
         # Formeln berechnen
         #Den Fortschritt den man haben sollte, um sein Studiendauerziel zu erfüllen
-        expected_progress = current_month_of_studying / duration_goal_of_studying_in_months
+        expected_progress = self.current_month_of_studying / self.duration_goal_of_studying_in_months
 
         #Anzahl der bestanden Module, die man bräuchte, um sein Studiendauerziel zu erreichen
         expected_passed_exams = all_modules_of_studys * expected_progress
 
 
         #Langsamer als erwartet, um sein Ziel zu erreichen
-        if current_amount_of_passed_modules < expected_passed_exams:
-
+        if self.current_amount_of_passed_modules < expected_passed_exams:
+            #self.study_duration_alarm = True
             print("Du bist zu langsam")
 
+
+            #Berechnen der Anzahl der Module, die man pro Monat bearbeiten sollte, um
+            # sein Studiendauerziel noch zu erreichen
+
+            #Berechnen der Anzahl der Module, die noch nicht bestanden wurden
+            modules_to_work_on = all_modules_of_studys - self.current_amount_of_passed_modules
+
+            #Berechnen der Anzahl der Monate, die übrig bleiben,bevor die Wunschstudiendauerzeit überschritten wurde
+
+            months_left_for_studying = self.duration_goal_of_studying_in_months - self.current_month_of_studying
+
+
+            #Die eigentliche Berechnung der Modulanzahl, die man pro Monat absolvieren muss
+
+            required_modules_per_month = round(modules_to_work_on / months_left_for_studying, 1)
+
+
+            print(f"Sie müssen {required_modules_per_month} Module pro Monat bearbeiten, damit sie "
+                  f"ihre gewünschte Studiendauer erreichen können ")
+
+
+
         elif current_amount_of_passed_modules > expected_passed_exams:
+            self.study_duration_alarm = False
+
+
             print("Du bist zeitlich gut dran. Weiter so")
 
 
@@ -227,6 +272,8 @@ class Studies(db.Model):
     #Anzahl der Semester im Studiengang
     semester_count = db.Column(db.Integer, nullable=False)
 
+    current_amount_of_passed_modules = db.Column(db.Integer)
+    current_month_of_studying = db.Column(db.Integer)
 
     #Stellt Verbindung zu übergeordneten Studentobjet her
     # Sie verbindet die Tabellen Studies und Students miteinander
