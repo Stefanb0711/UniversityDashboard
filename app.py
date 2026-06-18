@@ -36,28 +36,54 @@ with app.app_context():
                      semester_count=7, current_semester=3)
 
     # region Semesters
+
     semester1 = Semester(
         semester_number=1,
-        extra_semesters=0,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester2 = Semester(
         semester_number=2,
-        extra_semesters=0,
-        study=study2
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester3 = Semester(
         semester_number=3,
-        extra_semesters=1,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester4 = Semester(
         semester_number=4,
-        extra_semesters=2,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    semester5 = Semester(
+        semester_number=5,
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    semester6 = Semester(
+        semester_number=6,
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    sem1 = Semester(
+        semester_number=2,
+        semesters_per_semester=0,
+        study=study2,
+        modules_count=6
     )
 
     # endregion
@@ -240,10 +266,13 @@ def dashboard():
 
     my_dashboard.exam_score_alarm()
 
-    for semester in my_dashboard.semesters:
 
-        print("Semester: ", semester)
+    my_dashboard.study_duration_alarm()
 
+    #for semester in my_dashboard.semesters:
+
+    #print("Number of Semesters: ", len(semester))
+    #print("MyDashboardSemesters: ", my_dashboard.semesters.count())
 
 
 

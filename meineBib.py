@@ -84,6 +84,8 @@ class Dashboard:
 
             #self.all_exam_scores.extend(exam_score.score)
 
+        #Anzahl aller Hochsschulsemester
+        self.total_university_semesters = None
 
 
         #self.exam_scores_of_current_module = ExamScore.query.filter_by(module_id=self.curr.id).all()
@@ -140,17 +142,60 @@ class Dashboard:
         if self.mean_of_all_exam_scores < 50:
             self.exam_score_alarm_triggered = True
 
-
-
-
-
     def study_duration_alarm(self):
 
-        not_passed_modules = Module.query.filter_by(passed=False).all()
 
-        examed_modules_of_current_semester = Semester.query.filter_by("Exa")
+        #Anzahl der Semester pro Modul
+
+        #Anzahl der Module aufzählen, die bestanden wurden
+
+        #Anzahl der Module des Studiengangs berechnen
+
+
+
+        all_modules_of_studys = 0
+
+
+        for semester in self.semesters:
+            all_modules_of_studys += semester.modules_count
+
+        print("All Modules of Studys: ", all_modules_of_studys)
+
+
+        current_month_of_studying = 24
+
+        current_amount_of_passed_modules = 18
+
+        duration_goal_of_studying_in_months = 36
+
+        # Formeln berechnen
+        #Den Fortschritt den man haben sollte, um sein Studiendauerziel zu erfüllen
+        expected_progress = current_month_of_studying / duration_goal_of_studying_in_months
+
+        #Anzahl der bestanden Module, die man bräuchte, um sein Studiendauerziel zu erreichen
+        expected_passed_exams = all_modules_of_studys * expected_progress
+
+
+        #Langsamer als erwartet, um sein Ziel zu erreichen
+        if current_amount_of_passed_modules < expected_passed_exams:
+
+            print("Du bist zu langsam")
+
+        elif current_amount_of_passed_modules > expected_passed_exams:
+            print("Du bist zeitlich gut dran. Weiter so")
+
+
+        #not_passed_modules = Module.query.filter_by(passed=False).all()
+
+        #examed_modules_of_current_semester = Semester.query.filter_by("Exa")
 
         #self.modules_of_current_semester
+
+        #number_of_semesters = len(self.semesters)
+        #print("Number of semesters: ", number_of_semesters)
+
+        #for semester in self.semesters:
+
 
         """
             if self.semesters.extra_semesters > 0:
@@ -158,18 +203,6 @@ class Dashboard:
 
         """
 
-
-
-def datei_speichern(datei_name, inhalt):
-    with open(datei_name, "w") as datei:
-        datei.write(inhalt)
-
-def datei_laden(datei_name):
-    with open(datei_name, "r") as datei:
-        return datei.read()
-    
-
-    
 
 
 class Student(db.Model):
@@ -218,7 +251,11 @@ class Semester(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     semester_number = db.Column(db.Integer, nullable=False)
-    extra_semesters = db.Column(db.Integer, nullable=False)
+
+    #Anzahl der Hochschulsemester per Fachsemester
+    semesters_per_semester = db.Column(db.Integer, nullable=False)
+
+    modules_count = db.Column(db.Integer, nullable=False)
 
     #Stellt Verbindung zum übergeordneten Studiesobjekt her. Sie verbindet die Tabellen Semester und Studies
     study_id = db.Column(
