@@ -31,33 +31,62 @@ with app.app_context():
     student2 = Student(name="Anna Schmidt", age=27)
 
     study1 = Studies(name="Informatik", student=student1,
-                     semester_count=6, current_semester=1)
+                     semester_count=6, current_semester=1,
+                     current_month_of_studying=20
+                     )
+
     study2 = Studies(name="Wirtschaftsinformatik", student=student2,
-                     semester_count=7, current_semester=3)
+                     semester_count=7, current_semester=3, current_month_of_studying=12 )
 
     # region Semesters
+
     semester1 = Semester(
         semester_number=1,
-        extra_semesters=0,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester2 = Semester(
         semester_number=2,
-        extra_semesters=0,
-        study=study2
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester3 = Semester(
         semester_number=3,
-        extra_semesters=1,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
     )
 
     semester4 = Semester(
         semester_number=4,
-        extra_semesters=2,
-        study=study1
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    semester5 = Semester(
+        semester_number=5,
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    semester6 = Semester(
+        semester_number=6,
+        semesters_per_semester=0,
+        study=study1,
+        modules_count=5
+    )
+
+    sem1 = Semester(
+        semester_number=2,
+        semesters_per_semester=0,
+        study=study2,
+        modules_count=6
     )
 
     # endregion
@@ -230,6 +259,7 @@ def dashboard():
 
     student = Student.query.filter_by(name="Max Müller").first()
 
+    #study1 = Studies.query.filter_by(name="")
 
     my_dashboard = Dashboard(student=student
                              # , studies=current_student.studies,
@@ -240,10 +270,13 @@ def dashboard():
 
     my_dashboard.exam_score_alarm()
 
-    for semester in my_dashboard.semesters:
 
-        print("Semester: ", semester)
+    my_dashboard.study_duration_alarm()
 
+    #for semester in my_dashboard.semesters:
+
+    #print("Number of Semesters: ", len(semester))
+    #print("MyDashboardSemesters: ", my_dashboard.semesters.count())
 
 
 
