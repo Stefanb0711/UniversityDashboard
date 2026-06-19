@@ -99,7 +99,7 @@ class Dashboard:
         #Variabeln für StudyDurationAlarm
 
         self.study_duration_alarm_triggered = False
-
+        self.required_modules_per_month = None
 
         self.current_month_of_studying = self.studies.current_month_of_studying
 
@@ -215,10 +215,10 @@ class Dashboard:
 
             #Die eigentliche Berechnung der Modulanzahl, die man pro Monat absolvieren muss
 
-            required_modules_per_month = round(modules_to_work_on / months_left_for_studying, 1)
+            self.required_modules_per_month = round(modules_to_work_on / months_left_for_studying, 1)
 
 
-            print(f"Sie müssen {required_modules_per_month} Module pro Monat bearbeiten, damit sie "
+            print(f"Sie müssen {self.required_modules_per_month} Module pro Monat bearbeiten, damit sie "
                   f"ihre gewünschte Studiendauer erreichen können ")
 
 
