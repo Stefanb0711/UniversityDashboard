@@ -1,4 +1,4 @@
-from meineBib import Student, Studies, Semester, Module, ExamScore, Dashboard
+from myLib import Student, Studies, Semester, Module, ExamScore, Dashboard
 
 
 #Funktion zum erstellen der grundlegenden Beispieleinträge

@@ -28,8 +28,8 @@ db = SQLAlchemy()
 
 class Dashboard:
 
-    """semesters, student, studies,
-                     current_semester, modules, modules_of_current_semester"""
+    #Die Attribute von __init__ sind Variabeln, die übergeben werden können an das Objekt von Dashboard
+    #  __init__ wird hier genutzt
     def __init__(self, student):
 
         self.current_student = student

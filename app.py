@@ -5,7 +5,7 @@ from flask import redirect
 from flask_sqlalchemy import SQLAlchemy
 
 
-from meineBib import *
+from myLib import *
 
 
 
